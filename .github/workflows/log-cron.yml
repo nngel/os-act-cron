@@ -1,11 +1,11 @@
-# This is a basic workflow to help you get started with Actions
-
 name: Log Time Job
 
-# Controls when the workflow will run
 on:
   schedule:
     - cron: "*/5 * * * *" # Runs every 5 mins
+
+permissions:
+  contents: write
 
 jobs:
   log_time:
@@ -24,6 +24,9 @@ jobs:
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
+          git pull --rebase
           git add log.txt
           git commit -m "Update log files with new timestamp" || echo "No changes to commit"
           git push
+
+
