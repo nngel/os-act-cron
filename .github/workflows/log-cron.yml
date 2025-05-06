@@ -20,13 +20,24 @@ jobs:
           chmod +x log_time.sh
           ./log_time.sh
 
-      - name: Commit and push changes
+      - name: Stash changes (if any)
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
+          git stash || echo "No changes to stash"
+
+      - name: Pull latest changes
+        run: |
           git pull --rebase
+
+      - name: Apply stashed changes (if any)
+        run: |
+          git stash pop || echo "No stashed changes to apply"
+
+      - name: Commit and push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
           git add log.txt
           git commit -m "Update log files with new timestamp" || echo "No changes to commit"
           git push
-
-
